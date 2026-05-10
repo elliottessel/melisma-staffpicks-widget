@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <title>Staff Picks Widget</title>
+  <style>
+    /* your card styles will go here later */
+  </style>
+</head>
+<body>
+
+  <div id="staff-picks">
+    <!-- the widget cards will be injected here by JavaScript -->
+  </div>
+
+  <script>
+    const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS9Yj8QViaxbez9J9eS-5boup_9sWQ4Fg8s9r21NUZ924X4KXrjeyMgHyMYi6r0dJC0u7kNQdON_7Uc/pub?gid=0&single=true&output=csv";
+
+    // load staff picks into CSV format.
+    async function loadPicks() {
+    const response = await fetch(SHEET_URL);
+    const csvText = await response.text();
+    const data = parseCSV(csvText);
+    console.log(csvText);
+    }
+
+    function parseCSV(csvText) {
+        const result = Papa.parse(csvText, { header: true, skipEmptyLines: true });
+        return result.data; 
+    } 
+
+    loadPicks();
+
+    function buildCards(data) {
+        const container = document.getElementById("staff-picks");
+  
+        data.forEach(pick => {
+            const card = document.createElement("div");
+            card.className = "pick-card";
+            card.innerHTML = `
+            <img src="${pick.cover_url}" alt="${pick.album}" />
+            <div class="pick-info">
+                <p class="pick-album">${pick.album}</p>
+                <p class="pick-artist">${pick.artist}</p>
+                <p class="pick-blurb">${pick.blurb}</p>
+                <p class="pick-writer">${pick.writer_name}</p>
+            </div>
+            `;
+            container.appendChild(card);
+        });
+        }
+
+    
+
+    // step 1: fetch the data
+    // step 2: parse the CSV into usable objects
+    // step 3: build the HTML cards
+    // step 4: insert them into #staff-picks
+  </script>
+
+</body>
+</html>
