@@ -52,7 +52,7 @@
     text-align: right;
     }
 
-    .pick-title {
+    .pick-album {
     font-size: 13px;
     font-weight: 600;
     margin: 0 0 2px;
@@ -63,19 +63,19 @@
 
     .pick-artist {
     font-size: 12px;
-    color: #555;
+    color: black;
     margin: 0 0 4px;
     }
 
     .pick-writer {
     font-size: 11px;
-    color: #888;
+    color: black;
     margin: 0;
     }
 
     .pick-role {
     font-size: 11px;
-    color: #aaa;
+    color: black;
     margin: 0;
     }
 
@@ -91,7 +91,7 @@
   </div>
 
   <script>
-    const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS9Yj8QViaxbez9J9eS-5boup_9sWQ4Fg8s9r21NUZ924X4KXrjeyMgHyMYi6r0dJC0u7kNQdON_7Uc/pub?gid=0&single=true&output=csv";
+    const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS9Yj8QViaxbez9J9eS-5boup_9sWQ4Fg8s9r21NUZ924X4KXrjeyMgHyMYi6r0dJC0u7kNQdON_7Uc/pub?gid=1541089229&single=true&output=csv";
 
     // load staff picks into CSV format.
     async function loadPicks() {
@@ -111,20 +111,20 @@
     async function buildCards(data) {
         const container = document.getElementById("staff-picks");
   
-        for (const pick of data) {
-            const imageUrl = await getAlbumArt(pick.artist, pick.title, pick.type);
+        for (const pick of data.slice().reverse()) {
+            const imageUrl = await getAlbumArt(pick.artist, pick.album);
             console.log(imageUrl);
             const card = document.createElement("div");
             card.className = "pick-card";
             card.innerHTML = `
-            <img src="${imageUrl}" alt="${pick.title}" />
+            <img src="${imageUrl}" alt="${pick.album}" />
             <div class="pick-text">
             <div class="pick-main">
-                <p class="pick-title">${pick.title}</p>
+                <p class="pick-album">${pick.album}</p>
                 <p class="pick-artist">${pick.artist}</p>
             </div>
             <div class="pick-side">
-                <p class="pick-writer">${pick.name}</p>
+                <p class="pick-writer">${pick.full_name}</p>
                 <p class="pick-role">${pick.role}</p>
             </div>
             </div>
@@ -136,13 +136,11 @@
 
     const LASTFM_API_KEY = "9f23f51e08a92835161fc86bf7b1d12b";
 
-    async function getAlbumArt(artist, title, type) {
+    async function getAlbumArt(artist, album) {
         let url;
-        if (type === "track") {
-            url = `https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=${LASTFM_API_KEY}&artist=${encodeURIComponent(artist)}&track=${encodeURIComponent(title)}&format=json`;
-        } else {
-            url = `https://ws.audioscrobbler.com/2.0/?method=album.getInfo&api_key=${LASTFM_API_KEY}&artist=${encodeURIComponent(artist)}&album=${encodeURIComponent(title)}&format=json`;
-        }
+        
+        url = `https://ws.audioscrobbler.com/2.0/?method=album.getInfo&api_key=${LASTFM_API_KEY}&artist=${encodeURIComponent(artist)}&album=${encodeURIComponent(album)}&format=json`;
+        
 
         const response = await fetch(url);
         const data = await response.json();
