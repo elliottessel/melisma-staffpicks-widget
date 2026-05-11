@@ -59,24 +59,28 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    text-transform: capitalize;
     }
 
     .pick-artist {
     font-size: 12px;
     color: black;
     margin: 0 0 4px;
+    text-transform: capitalize;
     }
 
     .pick-writer {
     font-size: 11px;
     color: black;
     margin: 0;
+    text-transform: capitalize;
     }
 
     .pick-role {
     font-size: 11px;
     color: black;
     margin: 0;
+    text-transform: capitalize;
     }
 
     .pick-LIYL {
@@ -85,10 +89,7 @@
   </style>
 </head>
 <body>
-  <p class="sp-heading">Melisma Staff Picks</p>
-  <div id="staff-picks">
-    <!-- the widget cards will be injected here by JavaScript -->
-  </div>
+  <div id="staff-picks"></div>
 
   <script>
     const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS9Yj8QViaxbez9J9eS-5boup_9sWQ4Fg8s9r21NUZ924X4KXrjeyMgHyMYi6r0dJC0u7kNQdON_7Uc/pub?gid=1541089229&single=true&output=csv";
@@ -111,7 +112,7 @@
     async function buildCards(data) {
         const container = document.getElementById("staff-picks");
   
-        for (const pick of data.slice().reverse()) {
+        for (const pick of data.reverse().slice(0, 4)) {
             const imageUrl = await getAlbumArt(pick.artist, pick.album);
             console.log(imageUrl);
             const card = document.createElement("div");
@@ -151,13 +152,6 @@
         return data.album?.image?.[3]["#text"] || null;
     }
 
-
-
-
-    // step 1: fetch the data
-    // step 2: parse the CSV into usable objects
-    // step 3: build the HTML cards
-    // step 4: insert them into #staff-picks
   </script>
 
 </body>
